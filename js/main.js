@@ -39,16 +39,18 @@ function update() {
   // input -> goal width
   ballWallCollisionDetect(180);
   carWallCollisionDetect();
-  //// CAR TO BALL COLLISION REACTION (DETECTION(PLAYERS ARRAY))
-  carFrontBallCollision(frontFaceToBallCalc(players));
-  carRightBallCollision(rightFaceToBallCalc(players));
-  carLeftBallCollision(leftFaceToBallCalc(players));
-  carBottomBallCollision(bottomFaceToBallCalc(players));
-  //// Updates position of all corners of both vehicles
-  northEastCornerHit();
-  northWestCornerHit();
-  southEastCornerHit();
-  southWestCornerHit();
+
+  // car ball collisions
+  CarBallCollision.front(players, ball);
+  CarBallCollision.right(players, ball);
+  CarBallCollision.left(players, ball);
+  CarBallCollision.back(players, ball);
+
+  // corner hits
+  CornerBallCollision.NE(players, ball);
+  CornerBallCollision.NW(players, ball);
+  CornerBallCollision.SE(players, ball);
+  CornerBallCollision.SW(players, ball);
 }
 
 /* PLAYER CONSTRUCTOR */

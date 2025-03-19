@@ -1,70 +1,59 @@
+function calcPositions(player) {
+  const rad = player.rot * Math.PI / 180;
+  const sinTheta = Math.sin(rad), cosTheta = Math.cos(rad);
+
+  const w = player.width / 2, h = player.height / 2;
+
+  player.southEastCorner = [
+    player.xMid + w * cosTheta - h * sinTheta,
+    player.yMid + w * sinTheta + h * cosTheta
+  ];
+
+  player.southWestCorner = [
+    player.xMid - w * cosTheta - h * sinTheta,
+    player.yMid - w * sinTheta + h * cosTheta
+  ];
+
+  player.northEastCorner = [
+    player.xMid + w * cosTheta + h * sinTheta,
+    player.yMid + w * sinTheta - h * cosTheta
+  ];
+
+  player.northWestCorner = [
+    player.xMid - w * cosTheta + h * sinTheta,
+    player.yMid - w * sinTheta - h * cosTheta
+  ];
+
+  player.arrayX = [ player.northEastCorner[0], player.northWestCorner[0], player.southEastCorner[0], player.southWestCorner[0] ];
+  player.arrayY = [ player.northEastCorner[1], player.northWestCorner[1], player.southEastCorner[1], player.southWestCorner[1] ];
+
+  return player;
+}
+
 function carWallCollisionDetect() {
+  const len = players.length;
+  for (let i = 0; i < len; i++) {
+    const player = calcPositions(players[i]);
 
-  for (var i=0; i<players.length; i++) {
-    var sinTheta = Math.sin(players[i].rot*Math.PI/180);
-    var cosTheta = Math.cos(players[i].rot*Math.PI/180);
-
-
-    //Actually SouthEast corner on canvas
-    players[i].southEastCorner = [players[i].xMid + ((players[i].width/2)*cosTheta) - ((players[i].height/2)*sinTheta),
-                       players[i].yMid + ((players[i].width/2)*sinTheta) + ((players[i].height/2)*cosTheta)
-                       ];
-
-    //Actually SouthWest corner on canvas
-    players[i].southWestCorner = [players[i].xMid + ((-players[i].width/2)*cosTheta) - ((players[i].height/2)*sinTheta),
-                       players[i].yMid + ((-players[i].width/2)*sinTheta) + ((players[i].height/2)*cosTheta)
-                       ];
-
-    //Actually NorthEast corner on canvas
-    players[i].northEastCorner = [players[i].xMid + ((players[i].width/2)*cosTheta) - ((-players[i].height/2)*sinTheta),
-                       players[i].yMid + ((players[i].width/2)*sinTheta) + ((-players[i].height/2)*cosTheta)
-                       ];
-
-
-    //Actually NorthWest corner on canvas
-    players[i].northWestCorner = [players[i].xMid + ((-players[i].width/2)*cosTheta) - ((-players[i].height/2)*sinTheta),
-                       players[i].yMid + ((- players[i].width/2)*sinTheta) + ((-players[i].height/2)*cosTheta)
-                       ];
-
-    players[i].arrayX = [players[i].northEastCorner[0],
-                         players[i].northWestCorner[0],
-                         players[i].southEastCorner[0],
-                         players[i].southWestCorner[0]
-                         ];
-    players[i].arrayY = [players[i].northEastCorner[1],
-                         players[i].northWestCorner[1],
-                         players[i].southEastCorner[1],
-                         players[i].southWestCorner[1]
-                         ];
-
-    // Check X values
-    for (var j=0; j < players[i].arrayX.length; j++) {
-      if (players[i].arrayX[j] >= CANVAS_WIDTH) {
-        while (players[i].arrayX[j] >= CANVAS_WIDTH) {
-          players[i].xMid -= 2;
-          carWallCollisionDetect();
-        }
+    for (let j = 0; j < 4; j++) {
+      while (player.arrayX[j] >= CANVAS_WIDTH) {
+        player.xMid -= 2;
+        calcPositions(player);
       }
-      if (players[i].arrayX[j] <= 0) {
-        while (players[i].arrayX[j] <= 0) {
-          players[i].xMid += 2;
-          carWallCollisionDetect();
-        }
+
+      while (player.arrayX[j] <= 0) {
+        player.xMid += 2;
+        calcPositions(player);
       }
-    }
-    // Check Y values
-    for (var j=0; j < players[i].arrayY.length; j++) {
-      if (players[i].arrayY[j] >= CANVAS_HEIGHT) {
-        while (players[i].arrayY[j] >= CANVAS_HEIGHT) {
-          players[i].yMid -= 2;
-          carWallCollisionDetect();
-        }
+
+      while (player.arrayY[j] >= CANVAS_HEIGHT) {
+        player.yMid -= 2;
+        calcPositions(player);
       }
-      if (players[i].arrayY[j] <= 0) {
-        while (players[i].arrayY[j] <= 0) {
-          players[i].yMid += 2;
-          carWallCollisionDetect();
-        }
+
+      while (player.arrayY[j] <= 0) {
+        player.yMid += 2;
+        calcPositions(player);
       }
     }
   }
